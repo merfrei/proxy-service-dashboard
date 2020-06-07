@@ -8,10 +8,12 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-login = "*"
 toml = "*"
+flask-wtf = "*"
 
 [dev-packages]
 pylint = "*"
 pytest = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.7"

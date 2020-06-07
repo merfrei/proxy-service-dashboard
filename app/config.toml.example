@@ -1,0 +1,9 @@
+[database]
+uri = "postgresql://psdash:1234@localhost:5432/psdash"
+
+[app]
+secret_key = "eoc_r^h04-pxyhoo=oy8puhh*)(*ar*kmx-e$ny3^!0ryu@h#k"
+
+[api]
+url = "http://127.0.0.1:8080/api/v1.0/"
+api_key = "iro*i>Feiz9eewee0sha"
