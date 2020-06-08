@@ -1,0 +1,51 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}Targets{% endblock %}
+
+{% block content %}
+<h2 class="mt-4">Targets <button id="new-target-btn" type="button" class="btn btn-primary" style="float:right;">New</button></h2>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Identifier</th>
+      <th scope="col">Domain</th>
+      <th scope="col">Blocked Sleep (minutes)</th>
+      <th scope="col"></th> <!-- Edit -->
+      <th scope="col"></th> <!-- Remove -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for target in targets %}
+    <tr>
+      <th scope="row">{{ target['identifier'] }}</th>
+      <td>{{ target['domain'] }}</td>
+      <td>{{ target['blocked_standby'] }}</td>
+      <td>{{ url_for('dashboard.target_edit') }}</td>
+      <td>{{ url_for('dashboard.target_remove') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Targets pagination">
+  <div class="justify-content-center">
+    <i class="text text-secondary">{{ total }} targets found</i>
+  </div>
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if not prev_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if prev_page %}{{ url_for('dashboard.targets', page=prev_page) }}{% else %}#{% endif %}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item {% if not next_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if next_page %}{{ url_for('dashboard.targets', page=next_page) }}{% else %}#{% endif %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+{% endblock %}

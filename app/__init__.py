@@ -16,6 +16,9 @@ psdash.config['APP_DOMAINS'] = {domain for domain in config['app']['domains']}
 psdash.config['SECRET_KEY'] = config['app']['secret_key']
 psdash.config['SQLALCHEMY_DATABASE_URI'] = config['database']['uri']
 psdash.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+psdash.config['PAGE_SIZE'] = config['app']['page_size']
+
+psdash.config['api_url'] = config['api']['url']
 psdash.config['api_key'] = config['api']['api_key']
 
 # Setup Flask-SQLAlchemy

@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- These 3 meta tags MUST come first -->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- These 3 meta tags MUST come first -->
 
-        <title>PSDash - Login</title>
+    <title>PSDash - Login</title>
 
-	<link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
-	<link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/merfrei64.png') }}"/>
 
-	<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    </head>
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" id="bootstrap-css">
+    <link href="{{ url_for('static', filename='css/login.css') }}" rel="stylesheet">
 
-    <body>
-      <div class="wrapper fadeInDown">
-	<div id="formContent">
-	  <!-- Tabs Titles -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+  </head>
 
-	  <!-- Icon -->
-	  <div class="fadeIn first">
-	    <img src="{{ url_for('static', filename='images/merfrei.png') }}" id="logo" alt="Logo" />
-	  </div>
+  <body>
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+	<!-- Tabs Titles -->
 
-	  <!-- Login Form -->
-	  <form method="POST">
-	    {{ form.csrf_token }}
-	    <input type="text" id="{{ form.username.id }}" class="fadeIn second" name="{{ form.username.name }}" placeholder="username" required>
-	    <input type="password" id="{{ form.password.id }}" class="fadeIn third" name="{{ form.password.name }}" placeholder="password" required>
-	    <input type="submit" class="fadeIn fourth" value="Log In">
-	  </form>
-
-	  <!-- Footer -->
-	  <div id="formFooter">
-	    <p class="m-0 text-center text-secondary">Copyright &copy; Merfrei Solutions 2020</p>
-	  </div>
-
+	<!-- Icon -->
+	<div class="fadeIn first">
+	  <img src="{{ url_for('static', filename='images/merfrei.png') }}" id="logo" alt="Logo" />
 	</div>
+
+	<!-- Login Form -->
+	<form method="POST">
+	  {{ form.csrf_token }}
+	  <input type="text" id="{{ form.username.id }}" class="fadeIn second" name="{{ form.username.name }}" placeholder="username" required>
+	  <input type="password" id="{{ form.password.id }}" class="fadeIn third" name="{{ form.password.name }}" placeholder="password" required>
+	  <input type="submit" class="fadeIn fourth" value="Log In">
+	</form>
+
+	<!-- Footer -->
+	<div id="formFooter">
+	  <p class="m-0 text-center text-secondary">Copyright &copy; Merfrei Solutions 2020</p>
+	</div>
+
       </div>
-    </body>
+    </div>
+  </body>
 
 </html>

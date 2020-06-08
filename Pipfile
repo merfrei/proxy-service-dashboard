@@ -12,6 +12,8 @@ flask-wtf = "*"
 psycopg2 = "*"
 passlib = "*"
 is-safe-url = "*"
+requests = "*"
+w3lib = "*"
 
 [dev-packages]
 pylint = "*"
