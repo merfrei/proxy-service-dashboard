@@ -2,6 +2,7 @@
 uri = "postgresql://psdash:1234@localhost:5432/psdash"
 
 [app]
+domains = [ "localhost", "127.0.0.1", "aracness.io" ]
 secret_key = "eoc_r^h04-pxyhoo=oy8puhh*)(*ar*kmx-e$ny3^!0ryu@h#k"
 
 [api]

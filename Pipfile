@@ -9,6 +9,9 @@ flask-sqlalchemy = "*"
 flask-login = "*"
 toml = "*"
 flask-wtf = "*"
+psycopg2 = "*"
+passlib = "*"
+is-safe-url = "*"
 
 [dev-packages]
 pylint = "*"
