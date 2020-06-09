@@ -3,7 +3,7 @@
 {% block title %}Targets{% endblock %}
 
 {% block content %}
-<h2 class="mt-4">Targets <button id="new-target-btn" type="button" class="btn btn-primary" style="float:right;">New</button></h2>
+<h2 class="mt-4">Targets <a href="{{ url_for('dashboard.target_edit') }}" id="new-target-btn" type="button" class="btn btn-primary" style="float:right;">New</a></h2>
 
 <table class="table">
   <thead class="thead-dark">
@@ -12,7 +12,6 @@
       <th scope="col">Domain</th>
       <th scope="col">Blocked Sleep (minutes)</th>
       <th scope="col"></th> <!-- Edit -->
-      <th scope="col"></th> <!-- Remove -->
     </tr>
   </thead>
   <tbody>
@@ -21,8 +20,7 @@
       <th scope="row">{{ target['identifier'] }}</th>
       <td>{{ target['domain'] }}</td>
       <td>{{ target['blocked_standby'] }}</td>
-      <td>{{ url_for('dashboard.target_edit') }}</td>
-      <td>{{ url_for('dashboard.target_remove') }}</td>
+      <td><a href="{{ url_for('dashboard.target_edit', id=target['id']) }}">Edit</a></td>
     </tr>
     {% endfor %}
   </tbody>

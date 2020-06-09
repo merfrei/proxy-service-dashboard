@@ -19,8 +19,8 @@ class TargetForm(FlaskForm):
         validators.DataRequired('The domain is required')])
     identifier = StringField('Identifier', validators=[
         validators.DataRequired('A short identifier is required')])
-    sleep = StringField('Sleep', default=30, validators=[
-        validators.optional()])
+    sleep = IntegerField('Sleep', default=30, validators=[
+        validators.DataRequired()])
     providers = SelectMultipleField('Proxy Providers', coerce=int,
                                     validators=[validators.Optional()])
     plans = SelectMultipleField('Provider Plans', coerce=int,

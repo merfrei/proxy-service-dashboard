@@ -65,6 +65,14 @@ def update_api_relations(endpoint, parent_field, child_field, parent_id, *child_
         new_rel[child_field] = child_id
         api.post(endpoint, **new_rel)
 
+def generate_related_ids(endpoint, parent_field, child_field, parent_id):
+    '''Given an endpoint (relation) and a parent ID it will generate all the child IDs'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    params = {parent_field: parent_id}
+    resp = api.get(endpoint, **params)
+    for data in resp['data']:
+        yield data[child_field]
+
 
 def add_update_target_data(form):
     '''Given a TargetForm it will call the API and add the data'''
@@ -90,6 +98,26 @@ def add_update_target_data(form):
     if form.plans.data:
         update_api_relations(
             'target_provider_plan', 'target_id', 'provider_plan_id', **form.plans.data)
+
+def delete_target(target_id):
+    '''Delete the Target'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    api.delete('target', target_id)
+
+
+def populate_target_form(form, target_id):
+    '''Given a target ID it will populate the form with the data returned form the API'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    target = api.get('target', elem_id=target_id)['data']
+    if target:
+        form.id.data = target_id
+        form.domain.data = target['domain']
+        form.identifier.data = target['identifier']
+        form.sleep.data = target['blocked_standby']
+        form.providers.data = generate_related_ids(
+            'target_provider', 'target_id', 'provider_id', target_id)
+        form.plans.data = generate_related_ids(
+            'target_provider_plan', 'target_id', 'provider_plan_id', target_id)
 
 
 @dashboard_blueprint.route('/dashboard', methods=['GET'])
@@ -120,11 +148,15 @@ def target_edit():
     '''Add a new target or edit an existing one'''
     form = TargetForm()
     if form.validate_on_submit():
-        add_update_target_data(form)
+        target_delete_flag = request.args.get('delete')
+        if target_delete_flag:
+            delete_target(form.id.data)
+        else:
+            add_update_target_data(form)
         return redirect(url_for('dashboard.targets'))
     target_id = abs(request.args.get('id', 0, type=int))
     if target_id:
-        form.id.data = target_id
+        populate_target_form(form, target_id)
     form.providers.choices = get_api_options('provider')
     form.plans.choices = get_api_options('provider_plan')
     return render_template('dashboard/target_edit.html', form=form)

@@ -1,0 +1,52 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}Targets{% endblock %}
+
+{% block content %}
+
+{% if form.id.data %}
+<h2 class="mt-4">Edit Target</h2>
+{% else %}
+<h2 class="mt-4">New Target</h2>
+{% endif %}
+
+<form method="POST">
+  {{ form.csrf_token }}
+  {% if form.id.data %}
+  <input type="hidden" name="id" value="{{ form.id.data }}">
+  {% endif %}
+  <div class="form-group">
+    <label for="{{ form.domain.id }}">{{ form.domain.label }}</label>
+    <input type="text" class="form-control" id="{{ form.domain.id }}" name="{{ form.domain.name }}" placeholder="example.com" {% if form.domain.data %}value="{{ form.domain.data }}"{% endif %} required>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.identifier.id }}">{{ form.identifier.label }}</label>
+    <input type="text" class="form-control" id="{{ form.identifier.id }}" name="{{ form.identifier.name }}" placeholder="example" {% if form.identifier.data %}value="{{ form.identifier.data }}"{% endif %} required>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.sleep.id }}">{{ form.sleep.label }}</label>
+    <input type="number" min="0", max="999999" class="form-control" id="{{ form.sleep.id }}" name="{{ form.sleep.name }}" placeholder="example" {% if form.sleep.data %}value="{{ form.sleep.data }}"{% endif %} required>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.providers.id }}">{{ form.providers.label }}</label>
+    <select multiple class="form-control" id="{{ form.providers.id }}" name="{{ form.providers.name }}">
+      {% for pvid, prov in form.providers.choices %}
+      <option value="{{ pvid }}">{{ prov }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.plans.id }}">{{ form.plans.label }}</label>
+    <select multiple class="form-control" id="{{ form.plans.id }}" name="{{ form.plans.name }}">
+      {% for plid, plan in form.plans.choices %}
+      <option value="{{ plid }}">{{ plan }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <input type="submit" class="btn btn-primary" value="{% if form.id.data %}Edit{% else %}Add{% endif %}">
+  {% if form.id.data %}
+  <input type="submit" class="btn btn-danger" value="Delete" formaction="{{ url_for('dashboard.target_edit', delete=1) }}">
+  {% endif %}
+</form>
+
+{% endblock %}
