@@ -13,11 +13,15 @@ Dashboard views
 from flask import Blueprint
 from flask import render_template
 from flask import request
+from flask import url_for
+from flask import redirect
 
 from flask_login import login_required
 
 from app import psdash
 from app.contrib.api import API
+
+from app.models.dashboard import TargetForm
 
 
 dashboard_blueprint = Blueprint('dashboard', __name__, template_folder='dashboard')
@@ -41,6 +45,53 @@ def get_prev_next_page(total, current_page):
     return prev_page, next_page
 
 
+def get_api_options(endpoint, id_field='id', val_field='name'):
+    '''Call the API en return a list of tuples [(<id>, <value>), ...]'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    resp = api.get(endpoint)
+    return [(res[id_field], res[val_field]) for res in resp['data']]
+
+
+def update_api_relations(endpoint, parent_field, child_field, parent_id, *child_ids):
+    '''Update the relations so the parent_id will be related to the all the child_ids
+    All the existing data will be wiped and replaced with this new one'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    params = {parent_field: parent_id}
+    resp = api.get(endpoint, **params)
+    for data in resp['data']:
+        api.delete(endpoint, data['id'])
+    for child_id in child_ids:
+        new_rel = params.copy()
+        new_rel[child_field] = child_id
+        api.post(endpoint, **new_rel)
+
+
+def add_update_target_data(form):
+    '''Given a TargetForm it will call the API and add the data'''
+    api = API(psdash.config['api_url'], psdash.config['api_key'])
+    target_id = form.id.data
+    target_data = {
+        'domain': form.domain.data,
+        'identifier': form.identifier.data,
+        'blocked_standby': form.sleep.data,
+    }
+    if target_id:
+        # It is an update
+        api.put('target', target_id, **target_data)
+    else:
+        # Create the new target
+        resp = api.post('target', **target_data)
+        target_id = resp['data']['id']
+    # Update Target/Provider relations
+    if form.providers.data:
+        update_api_relations(
+            'target_provider', 'target_id', 'provider_id', **form.providers.data)
+    # Update Target/Plan relations
+    if form.plans.data:
+        update_api_relations(
+            'target_provider_plan', 'target_id', 'provider_plan_id', **form.plans.data)
+
+
 @dashboard_blueprint.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
@@ -61,6 +112,22 @@ def targets():
     return render_template('dashboard/targets.html',
                            targets=results, total=total,
                            prev_page=prev_page, next_page=next_page)
+
+
+@dashboard_blueprint.route('/target/edit', methods=['GET', 'POST'])
+@login_required
+def target_edit():
+    '''Add a new target or edit an existing one'''
+    form = TargetForm()
+    if form.validate_on_submit():
+        add_update_target_data(form)
+        return redirect(url_for('dashboard.targets'))
+    target_id = abs(request.args.get('id', 0, type=int))
+    if target_id:
+        form.id.data = target_id
+    form.providers.choices = get_api_options('provider')
+    form.plans.choices = get_api_options('provider_plan')
+    return render_template('dashboard/target_edit.html', form=form)
 
 
 @dashboard_blueprint.route('/proxies', methods=['GET'])
