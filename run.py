@@ -8,7 +8,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='PSDash - CLI server debug')
 parser.add_argument('--dbcreate', type=bool, dest='dbc', default=False, help='Create the DB schema')
-parser.add_argument('--run', type=bool, dest='run', default=True, help='Create the DB schema')
+parser.add_argument('--run', type=bool, dest='run', default=True, help='Run the debug server')
 
 
 if __name__ == '__main__':
