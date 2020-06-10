@@ -112,13 +112,10 @@ def add_update_target_data(form):
         resp = api.post('target', **target_data)
         target_id = resp['data']['id']
     # Update Target/Provider relations
-    if form.providers.data:
-        update_api_relations(
-            'target_provider', 'target_id', 'provider_id', target_id, *form.providers.data)
-    # Update Target/Plan relations
-    if form.plans.data:
-        update_api_relations(
-            'target_provider_plan', 'target_id', 'provider_plan_id', target_id, *form.plans.data)
+    update_api_relations(
+        'target_provider', 'target_id', 'provider_id', target_id, *form.providers.data)
+    update_api_relations(
+        'target_provider_plan', 'target_id', 'provider_plan_id', target_id, *form.plans.data)
 
 
 def add_update_proxy_data(form):
