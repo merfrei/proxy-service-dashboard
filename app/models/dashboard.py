@@ -29,6 +29,7 @@ class TargetForm(FlaskForm):
 
 class ProxyTypeForm(FlaskForm):
     '''Proxy Type Form'''
+    id = IntegerField('Proxy Type ID', validators=[validators.Optional()])
     name = StringField('Type Name', validators=[
         validators.Length(min=1, max=20),
         validators.DataRequired('A name is required')])
@@ -39,6 +40,7 @@ class ProxyTypeForm(FlaskForm):
 
 class ProxyLocationForm(FlaskForm):
     '''Proxy Location Form'''
+    id = IntegerField('Proxy Location ID', validators=[validators.Optional()])
     name = StringField('Location Name', validators=[
         validators.Length(min=1, max=256),
         validators.DataRequired('A name is required')])
@@ -64,8 +66,7 @@ class ProviderForm(FlaskForm):
 class ProviderPlanForm(FlaskForm):
     '''Provider Plan Form'''
     id = IntegerField('Provider Plan ID', validators=[validators.Optional()])
-    provider_id = IntegerField('The provider ID', validators=[
-        validators.DataRequired('The provider ID is required')])
+    provider = SelectField('The Provider', coerce=int, validators=[validators.DataRequired()])
     name = StringField('Provider Plan Name', validators=[
         validators.Length(min=1, max=256),
         validators.DataRequired('A name is required')])
@@ -81,10 +82,10 @@ class ProxyForm(FlaskForm):
         validators.URL(),
         validators.DataRequired('URL is required')])
     active = BooleanField('Active', default=True, validators=[validators.DataRequired()])
-    proxy_type_id = SelectField('Proxy Type', coerce=int, validators=[validators.DataRequired()])
-    proxy_location_id = SelectField('Proxy Location ID', coerce=int, validatores=[validators.Optional()])
-    provider_id = SelectField('Provider ID', coerce=int, validators=[validators.Optional()])
-    provider_plan_id = SelectField('Provider Plan ID', coerce=int, validators=[validators.Optional()])
+    proxy_type = SelectField('Proxy Type', coerce=int, validators=[validators.DataRequired()])
+    proxy_location = SelectField('Proxy Location ID', coerce=int, validatores=[validators.Optional()])
+    provider = SelectField('Provider ID', coerce=int, validators=[validators.Optional()])
+    provider_plan = SelectField('Provider Plan ID', coerce=int, validators=[validators.Optional()])
     tor_control_port = IntegerField('Tor Control Port', validators=[validators.Optional()])
     tor_control_pswd = StringField('Tor Control Password', validators=[validators.Optional()])
     tor_renew_identity = BooleanField('Tor Renew Identity',

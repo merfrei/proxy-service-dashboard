@@ -3,5 +3,57 @@
 {% block title %}Proxies{% endblock %}
 
 {% block content %}
-<h1 class="mt-4">Proxies</h1>
+<h2 class="mt-4">Proxies <a href="{{ url_for('dashboard.proxy_edit') }}" id="new-proxy-btn" type="button" class="btn btn-primary" style="float:right;">New</a></h2>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">URL</th>
+      <th scope="col">Active</th>
+      <th scope="col">Type</th>
+      <th scope="col">Location</th>
+      <th scope="col">Provider</th>
+      <th scope="col">Plan</th>
+      <th scope="col"></th> <!-- Edit -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for proxy in results %}
+    <tr>
+      <th scope="row">{{ proxy['url'] }}</th>
+      {% if proxy['active'] %}
+      <td style="color:green;">Yes</td>
+      {% else %}
+      <td style="color:red;">No</td>
+      {% endif %}
+      <td>{{ proxy['type'] }}</td>
+      <td>{{ proxy['location'] }}</td>
+      <td>{{ proxy['provider'] }}</td>
+      <td>{{ proxy['plan'] }}</td>
+      <td><a href="{{ url_for('dashboard.proxy_edit', id=proxy['id']) }}">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Proxies pagination">
+  <div class="justify-content-center">
+    <i class="text text-secondary">{{ total }} proxies found</i>
+  </div>
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if not prev_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if prev_page %}{{ url_for('dashboard.proxies', page=prev_page) }}{% else %}#{% endif %}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item {% if not next_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if next_page %}{{ url_for('dashboard.proxies', page=next_page) }}{% else %}#{% endif %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 {% endblock %}
