@@ -1,0 +1,49 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}Plans{% endblock %}
+
+{% block content %}
+<h2 class="mt-4">Plans <a href="{{ url_for('dashboard.plan_edit') }}" id="new-plan-btn" type="button" class="btn btn-primary" style="float:right;">New</a></h2>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Code</th>
+      <th scope="col">Provider</th>
+      <th scope="col">Name</th>
+      <th scope="col"></th> <!-- Edit -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for plan in results %}
+    <tr>
+      <th scope="row">{{ plan['code'] }}</th>
+      <td>{{ plan['provider'] }}</td>
+      <td>{{ plan['name'] }}</td>
+      <td><a href="{{ url_for('dashboard.plan_edit', id=plan['id']) }}">Edit</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Plans pagination">
+  <div class="justify-content-center">
+    <i class="text text-secondary">{{ total }} plans found</i>
+  </div>
+  <ul class="pagination justify-content-center">
+    <li class="page-item {% if not prev_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if prev_page %}{{ url_for('dashboard.plans', page=prev_page) }}{% else %}#{% endif %}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item {% if not next_page %}disabled{% endif %}">
+      <a class="page-link" href="{% if next_page %}{{ url_for('dashboard.plans', page=next_page) }}{% else %}#{% endif %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+{% endblock %}

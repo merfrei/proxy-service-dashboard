@@ -1,0 +1,86 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}Proxies{% endblock %}
+
+{% block content %}
+
+{% if form.id.data %}
+<h2 class="mt-4">Edit Proxy</h2>
+{% else %}
+<h2 class="mt-4">New Proxy</h2>
+{% endif %}
+
+<form method="POST">
+  {{ form.csrf_token }}
+  {% if form.id.data %}
+  <input type="hidden" name="id" value="{{ form.id.data }}">
+  {% endif %}
+  <div class="form-group">
+    <label for="{{ form.url.id }}">{{ form.url.label }}</label>
+    <input type="url" class="form-control" id="{{ form.url.id }}" name="{{ form.url.name }}" placeholder="http://179.134.32.12:8080" {% if form.url.data %}value="{{ form.url.data }}"{% endif %} required>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="{{ form.active.id }}" name="{{ form.active.name }}" {% if form.active.data %}checked{% endif %}>
+    <label class="form-check-label" for="{{ form.active.id }}">
+      {{ form.active.label }}
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.proxy_type.id }}">{{ form.proxy_type.label }}</label>
+    <select class="form-control" id="{{ form.proxy_type.id }}" name="{{ form.proxy_type.name }}" required>
+      {% for ptid, ptval in form.proxy_type.choices %}
+      <option value="{{ ptid }}" {% if ptid == form.proxy_type.data %}selected{% endif %}>{{ ptval }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.proxy_location.id }}">{{ form.proxy_location.label }}</label>
+    <select class="form-control" id="{{ form.proxy_location.id }}" name="{{ form.proxy_location.name }}">
+      {% for plid, plval in form.proxy_location.choices %}
+      <option value="{{ plid }}" {% if plid == form.proxy_location.data %}selected{% endif %}>{{ plval }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.provider.id }}">{{ form.provider.label }}</label>
+    <select class="form-control" id="{{ form.provider.id }}" name="{{ form.provider.name }}">
+      {% for pvid, pvval in form.provider.choices %}
+      <option value="{{ pvid }}" {% if pvid == form.provider.data %}selected{% endif %}>{{ pvval }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.provider_plan.id }}">{{ form.provider_plan.label }}</label>
+    <select class="form-control" id="{{ form.provider_plan.id }}" name="{{ form.provider_plan.name }}">
+      {% for ppid, ppval in form.provider_plan.choices %}
+      <option value="{{ ppid }}" {% if ppid == form.provider_plan.data %}selected{% endif %}>{{ ppval }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.tor_control_port.id }}">{{ form.tor_control_port.label }}</label>
+    <input type="number" min="1000" max="65535" class="form-control" id="{{ form.tor_control_port.id }}" name="{{ form.tor_control_port.name }}" {% if form.tor_control_port.data %}value="{{ form.tor_control_port.data }}"{% endif %}>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.tor_control_pswd.id }}">{{ form.tor_control_pswd.label }}</label>
+    <input type="password" class="form-control" id="{{ form.tor_control_pswd.id }}" name="{{ form.tor_control_pswd.name }}" {% if form.tor_control_pswd.data %}value="{{ form.tor_control_pswd.data }}"{% endif %}>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="{{ form.tor_renew_identity.id }}" name="{{ form.tor_renew_identity.name }}" {% if form.tor_renew_identity.data %}checked{% endif %}>
+    <label class="form-check-label" for="{{ form.tor_renew_identity.id }}">
+      {{ form.tor_renew_identity.label }}
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="{{ form.dont_block.id }}" name="{{ form.dont_block.name }}" {% if form.dont_block.data %}checked{% endif %}>
+    <label class="form-check-label" for="{{ form.dont_block.id }}">
+      {{ form.dont_block.label }}
+    </label>
+  </div>
+  <input type="submit" class="btn btn-primary" value="{% if form.id.data %}Edit{% else %}Add{% endif %}">
+  {% if form.id.data %}
+  <input type="submit" class="btn btn-danger" value="Delete" formaction="{{ url_for('dashboard.proxy_edit', delete=1) }}">
+  {% endif %}
+</form>
+
+{% endblock %}

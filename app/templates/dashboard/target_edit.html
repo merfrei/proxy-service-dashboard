@@ -31,7 +31,7 @@
     <label for="{{ form.providers.id }}">{{ form.providers.label }}</label>
     <select multiple class="form-control" id="{{ form.providers.id }}" name="{{ form.providers.name }}">
       {% for pvid, prov in form.providers.choices %}
-      <option value="{{ pvid }}">{{ prov }}</option>
+      <option value="{{ pvid }}" {% if pvid in form.providers.data %}selected{% endif %}>{{ prov }}</option>
       {% endfor %}
     </select>
   </div>
@@ -39,7 +39,7 @@
     <label for="{{ form.plans.id }}">{{ form.plans.label }}</label>
     <select multiple class="form-control" id="{{ form.plans.id }}" name="{{ form.plans.name }}">
       {% for plid, plan in form.plans.choices %}
-      <option value="{{ plid }}">{{ plan }}</option>
+      <option value="{{ plid }}" {% if plid in form.plans.data %}selected{% endif %}>{{ plan }}</option>
       {% endfor %}
     </select>
   </div>

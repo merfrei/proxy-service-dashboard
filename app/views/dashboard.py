@@ -114,11 +114,11 @@ def add_update_target_data(form):
     # Update Target/Provider relations
     if form.providers.data:
         update_api_relations(
-            'target_provider', 'target_id', 'provider_id', target_id, **form.providers.data)
+            'target_provider', 'target_id', 'provider_id', target_id, *form.providers.data)
     # Update Target/Plan relations
     if form.plans.data:
         update_api_relations(
-            'target_provider_plan', 'target_id', 'provider_plan_id', target_id, **form.plans.data)
+            'target_provider_plan', 'target_id', 'provider_plan_id', target_id, *form.plans.data)
 
 
 def add_update_proxy_data(form):
@@ -128,10 +128,10 @@ def add_update_proxy_data(form):
     proxy_data = {
         'url': form.url.data,
         'active': form.active.data,
-        'proxy_type_id': form.proxy_type_id.data,
-        'proxy_location_id': form.proxy_location_id.data,
-        'provider_id': form.provider_id.data,
-        'provider_plan_id': form.provider_plan_id.data,
+        'proxy_type_id': form.proxy_type.data,
+        'proxy_location_id': form.proxy_location.data,
+        'provider_id': form.provider.data,
+        'provider_plan_id': form.provider_plan.data,
         'tor_control_port': form.tor_control_port.data,
         'tor_control_pswd': form.tor_control_pswd.data,
         'tor_renew_identity': form.tor_renew_identity.data,
@@ -157,6 +157,7 @@ def populate_form(endpoint, form, elem_id, *fields_map):
     api = API(psdash.config['api_url'], psdash.config['api_key'])
     element = api.get(endpoint, elem_id=elem_id)['data']
     if element:
+        form.id.data = elem_id
         for api_field, form_field in fields_map:
             getattr(form, form_field).data = element[api_field]
 
@@ -170,10 +171,10 @@ def populate_target_form(form, target_id):
         form.domain.data = target['domain']
         form.identifier.data = target['identifier']
         form.sleep.data = target['blocked_standby']
-        form.providers.data = generate_related_ids(
-            'target_provider', 'target_id', 'provider_id', target_id)
-        form.plans.data = generate_related_ids(
-            'target_provider_plan', 'target_id', 'provider_plan_id', target_id)
+        form.providers.data = set(generate_related_ids(
+            'target_provider', 'target_id', 'provider_id', target_id))
+        form.plans.data = set(generate_related_ids(
+            'target_provider_plan', 'target_id', 'provider_plan_id', target_id))
 
 
 def populate_proxy_form(form, proxy_id):
@@ -250,6 +251,8 @@ def targets():
 def target_edit():
     '''Add/Edit/Remove a target'''
     form = TargetForm()
+    form.providers.choices = get_api_options('provider')
+    form.plans.choices = get_api_options('provider_plan')
     if form.validate_on_submit():
         delete_flag = request.args.get('delete')
         if delete_flag:
@@ -260,8 +263,6 @@ def target_edit():
     elem_id = abs(request.args.get('id', 0, type=int))
     if elem_id:
         populate_target_form(form, elem_id)
-    form.providers.choices = get_api_options('provider')
-    form.plans.choices = get_api_options('provider_plan')
     return render_template('dashboard/target_edit.html', form=form)
 
 
@@ -284,6 +285,10 @@ def proxies():
 def proxy_edit():
     '''Add/Edit/Remove a proxy'''
     form = ProxyForm()
+    form.proxy_type.choices = get_api_options('proxy_type')
+    form.proxy_location.choices = get_api_options('proxy_location')
+    form.provider.choices = get_api_options('provider')
+    form.provider_plan.choices = get_api_options('provider_plan')
     if form.validate_on_submit():
         delete_flag = request.args.get('delete')
         if delete_flag:
@@ -294,10 +299,6 @@ def proxy_edit():
     elem_id = abs(request.args.get('id', 0, type=int))
     if elem_id:
         populate_proxy_form(form, elem_id)
-    form.proxy_type.choices = get_api_options('proxy_type')
-    form.proxy_location.choices = get_api_options('proxy_location')
-    form.provider.choices = get_api_options('provider')
-    form.provider_plan.choices = get_api_options('provider_plan')
     return render_template('dashboard/proxy_edit.html', form=form)
 
 
@@ -326,7 +327,7 @@ def type_edit():
     elem_id = abs(request.args.get('id', 0, type=int))
     if elem_id:
         populate_form('proxy_type', form, elem_id, *[('name', 'name'), ('code', 'code')])
-    return render_template('dashboard/proxy_edit.html', form=form)
+    return render_template('dashboard/type_edit.html', form=form)
 
 
 @dashboard_blueprint.route('/locations', methods=['GET'])
@@ -339,7 +340,7 @@ def locations():
                            prev_page=prev_page, next_page=next_page)
 
 
-@dashboard_blueprint.route('/type/edit', methods=['GET', 'POST'])
+@dashboard_blueprint.route('/location/edit', methods=['GET', 'POST'])
 @login_required
 def location_edit():
     '''Add/Edit/Remove a proxy location'''
@@ -347,14 +348,14 @@ def location_edit():
     if form.validate_on_submit():
         delete_flag = request.args.get('delete')
         if delete_flag:
-            delete_element('proxy_type', form.id.data)
+            delete_element('proxy_location', form.id.data)
         else:
-            add_update_data('proxy_type', form, *[('name', 'name'), ('code', 'code')])
-        return redirect(url_for('dashboard.types'))
+            add_update_data('proxy_location', form, *[('name', 'name'), ('code', 'code')])
+        return redirect(url_for('dashboard.locations'))
     elem_id = abs(request.args.get('id', 0, type=int))
     if elem_id:
-        populate_form('proxy_type', form, elem_id, *[('name', 'name'), ('code', 'code')])
-    return render_template('dashboard/proxy_edit.html', form=form)
+        populate_form('proxy_location', form, elem_id, *[('name', 'name'), ('code', 'code')])
+    return render_template('dashboard/location_edit.html', form=form)
 
 
 @dashboard_blueprint.route('/providers', methods=['GET'])
@@ -379,7 +380,7 @@ def provider_edit():
         else:
             add_update_data('provider', form,
                             *[('name', 'name'), ('url', 'url'), ('code', 'code')])
-        return redirect(url_for('dashboard.types'))
+        return redirect(url_for('dashboard.providers'))
     elem_id = abs(request.args.get('id', 0, type=int))
     if elem_id:
         populate_form('provider', form, elem_id,
@@ -392,6 +393,7 @@ def provider_edit():
 def plans():
     '''The Providers page'''
     results, total, prev_page, next_page = return_paginated_list('provider_plan')
+    add_name_to_results(results, 'provider_id', 'provider', 'name', 'provider')
     return render_template('dashboard/plans.html',
                            results=results, total=total,
                            prev_page=prev_page, next_page=next_page)
@@ -402,6 +404,7 @@ def plans():
 def plan_edit():
     '''Add/Edit/Remove a proxy provider plan'''
     form = ProviderPlanForm()
+    form.provider.choices = get_api_options('provider')
     if form.validate_on_submit():
         delete_flag = request.args.get('delete')
         if delete_flag:

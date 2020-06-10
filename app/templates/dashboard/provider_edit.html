@@ -1,0 +1,36 @@
+{% extends 'dashboard/dashboard.html' %}
+
+{% block title %}Providers{% endblock %}
+
+{% block content %}
+
+{% if form.id.data %}
+<h2 class="mt-4">Edit Provider</h2>
+{% else %}
+<h2 class="mt-4">New Provider</h2>
+{% endif %}
+
+<form method="POST">
+  {{ form.csrf_token }}
+  {% if form.id.data %}
+  <input type="hidden" name="id" value="{{ form.id.data }}">
+  {% endif %}
+  <div class="form-group">
+    <label for="{{ form.name.id }}">{{ form.name.label }}</label>
+    <input type="text" class="form-control" id="{{ form.name.id }}" name="{{ form.name.name }}" placeholder="Proxy Provider" {% if form.name.data %}value="{{ form.name.data }}"{% endif %} required>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.url.id }}">{{ form.url.label }}</label>
+    <input type="url" class="form-control" id="{{ form.url.id }}" name="{{ form.url.name }}" placeholder="https://proxies.com" {% if form.url.data %}value="{{ form.url.data }}"{% endif %}>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.code.id }}">{{ form.code.label }}</label>
+    <input type="text" class="form-control" id="{{ form.code.id }}" name="{{ form.code.name }}" placeholder="PPP" {% if form.code.data %}value="{{ form.code.data }}"{% endif %} required>
+  </div>
+  <input type="submit" class="btn btn-primary" value="{% if form.id.data %}Edit{% else %}Add{% endif %}">
+  {% if form.id.data %}
+  <input type="submit" class="btn btn-danger" value="Delete" formaction="{{ url_for('dashboard.provider_edit', delete=1) }}">
+  {% endif %}
+</form>
+
+{% endblock %}

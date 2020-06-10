@@ -83,7 +83,8 @@ class ProxyForm(FlaskForm):
         validators.DataRequired('URL is required')])
     active = BooleanField('Active', default=True, validators=[validators.DataRequired()])
     proxy_type = SelectField('Proxy Type', coerce=int, validators=[validators.DataRequired()])
-    proxy_location = SelectField('Proxy Location ID', coerce=int, validatores=[validators.Optional()])
+    proxy_location = SelectField('Proxy Location ID', coerce=int,
+                                 validators=[validators.Optional()])
     provider = SelectField('Provider ID', coerce=int, validators=[validators.Optional()])
     provider_plan = SelectField('Provider Plan ID', coerce=int, validators=[validators.Optional()])
     tor_control_port = IntegerField('Tor Control Port', validators=[validators.Optional()])
