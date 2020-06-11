@@ -14,5 +14,5 @@ umask = 7
 max_requests = 1000
 worker_class = 'gevent'
 workers = max_workers()
-access_logfile = 'gunicorn_access.log'
-error_logfile = 'gunicorn_error.log'
+accesslog = 'gunicorn_access.log'
+errorlog = 'gunicorn_error.log'
