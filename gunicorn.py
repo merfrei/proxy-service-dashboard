@@ -12,5 +12,5 @@ bind = '0.0.0.0:' + environ.get('PORT', '5050')
 max_requests = 1000
 worker_class = 'gevent'
 workers = max_workers()
-access-logfile = gunicorn_access.log
-error-logfile = gunicorn_error.log
+access_logfile = 'gunicorn_access.log'
+error_logfile = 'gunicorn_error.log'
