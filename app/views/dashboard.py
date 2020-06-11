@@ -221,8 +221,11 @@ def add_name_to_results(results, id_field, api_endpoint, src_field, name_field):
     api = API(psdash.config['api_url'], psdash.config['api_key'])
     for result in results:
         src_id = result[id_field]
-        resp = api.get(api_endpoint, elem_id=src_id)
-        result[name_field] = resp['data'][src_field]
+        if src_id is not None:
+            resp = api.get(api_endpoint, elem_id=src_id)
+            result[name_field] = resp['data'][src_field]
+        else:
+            result[name_field] = ''
 
 
 @dashboard_blueprint.route('/dashboard', methods=['GET'])
